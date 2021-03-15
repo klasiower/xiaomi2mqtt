@@ -7,6 +7,7 @@ use JSON;
 
 use FindBin;
 use lib "$FindBin::Bin/../extlib";
+my $root = "$FindBin::Bin/../";
 
 my $config = {
     gatttool_bin        =>  '/usr/bin/gatttool',
@@ -17,7 +18,7 @@ my $config = {
     hciconfig_bin       => '/bin/hciconfig',
     hci_device          => 'hci1',
     hci_timeout         => 10,
-    verbose             => 0,
+    verbose             => 1,
     # export        => 'sensor:xiaomi2 values: battery:100 | fertility:1127 | light:4396 | moisture:61 | name:Flower care | temperature:312 | time:1533376650 | version:2.7.0'
     export              => [qw(mac battery fertility light moisture temperature time)],
     # munin_dir        => '/var/lib/munin/xiaomi/',
@@ -32,7 +33,11 @@ my $config = {
 
 eval {
     local *F;
-    open F, '<', $config->{sensor_file} or die("Can't read sensor_file:$config->{sensor_file} ($!)");
+	my $file = $config->{sensor_file};
+	unless ($file =~ m{^/}) {
+		$file = sprintf('%s/%s', $root, $config->{sensor_file});
+	}
+    open F, '<', $file or die("Can't read sensor_file:$file ($!)");
     while (my $line = <F>) {
         chomp $line;
         next if $line =~ m{^ *#};
@@ -117,6 +122,9 @@ foreach my $sensor (sort keys %{ $config->{sensor} }) {
 
     if ($config->{use_munin}) {
         my $path = $config->{munin_dir}.'/'.$sensor;
+		unless ($path =~ m{^/}) {
+			$path = sprintf('%s/%s/%s', $root, $config->{munin_dir}, $sensor);
+		}
         eval {
             $SIG{__WARN__} = sub { die };
             local *F;
