@@ -16,7 +16,7 @@ my $config = {
     # hciconfig hci0 reset
     sudo_bin            => '/usr/bin/sudo',
     hciconfig_bin       => '/bin/hciconfig',
-    hci_device          => 'hci1',
+    hci_device          => 'hci0',
     hci_timeout         => 10,
     verbose             => 1,
     # export        => 'sensor:xiaomi2 values: battery:100 | fertility:1127 | light:4396 | moisture:61 | name:Flower care | temperature:312 | time:1533376650 | version:2.7.0'
@@ -154,7 +154,7 @@ exit;
 sub gatt_read {
     my ($sensor, $handle) = @_;
 
-    my $cmd = [$config->{gatttool_bin}, "--device=$config->{sensor}{$sensor}{mac}", "--char-read", "-a", "$handle"];
+    my $cmd = [$config->{gatttool_bin}, "--adapter=$config->{hci_device}", "--device=$config->{sensor}{$sensor}{mac}", "--char-read", "-a", "$handle"];
     my ($in, $out, $err);
 
     eval {
@@ -186,7 +186,7 @@ sub gatt_read {
 sub gatt_write{
     my ($sensor, $handle, $value) = @_;
 
-    my $cmd = [$config->{gatttool_bin}, "--device=$config->{sensor}{$sensor}{mac}", "--char-write-req", "--handle", "$handle", "--value=$value"];
+    my $cmd = [$config->{gatttool_bin}, "--adapter=$config->{hci_device}", "--device=$config->{sensor}{$sensor}{mac}", "--char-write-req", "--handle", "$handle", "--value=$value"];
     my ($in, $out, $err);
 
     eval {
