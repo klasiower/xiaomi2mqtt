@@ -106,7 +106,7 @@ foreach my $sensor (sort keys %{ $config->{sensor} }) {
             # print 'Values: '.(join ',', @fields)."\n";
             $config->{sensor}{$sensor}{values}{temperature} = $fields[0] / 10;
             $config->{sensor}{$sensor}{values}{light}       = $fields[1];
-            $config->{sensor}{$sensor}{values}{moisture}    = $fields[2] / 10;
+            $config->{sensor}{$sensor}{values}{moisture}    = $fields[2];
             $config->{sensor}{$sensor}{values}{fertility}   = $fields[3];
         }
     }
