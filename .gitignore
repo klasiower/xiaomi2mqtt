@@ -1,3 +1,8 @@
+data/sensors.txt
+data/xiaomi_*
+
+.*.swp
+
 !Build/
 .last_cover_stats
 /META.yml
